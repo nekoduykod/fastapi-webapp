@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 class Users(BaseModel):
-    # id: int    i removed it
     username: str    
     password: str
     email: str   

@@ -48,16 +48,19 @@ async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.post("/login", response_class=HTMLResponse)
-async def login(request: Request, user: SchemaUsers):
-    existing_user = db.session.query(Users).filter(Users.username == user.username, Users.password == user.password).first()
+async def login(request: Request, 
+                username: str = Form(...), 
+                password: str = Form(...)):
+    existing_user = db.session.query(Users).filter(Users.username == username, Users.password == password).first()
     if existing_user:
         return RedirectResponse(url="/account", status_code=303)
     else:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
-
+    
 @app.get('/account', response_class=HTMLResponse)
 async def account_page(request: Request):
-    return templates.TemplateResponse("account.html", {"request": request})
+    logged_in_user = {"username": "DemoUser", "email": "demo@example.com"}
+    return templates.TemplateResponse("account.html", {"request": request, "user": logged_in_user, "error": None})
 
 @app.post('/account', response_class=HTMLResponse)
 async def change_pass(request: Request, user: SchemaUsers):
