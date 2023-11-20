@@ -4,8 +4,9 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates 
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 from dotenv import load_dotenv
+from starlette.middleware.sessions import SessionMiddleware
 import os
-
+ 
 from models import Users
 from models import Users as ModelUsers
 from models import Statistics
@@ -20,6 +21,8 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
+app.add_middleware(SessionMiddleware, secret_key="bananabomb")
+
 
 @app.get('/', response_class=HTMLResponse)
 async def home(request: Request):     # I can use only def in these snippets
@@ -49,29 +52,39 @@ async def login_page(request: Request):
 
 @app.post("/login", response_class=HTMLResponse)
 async def login(request: Request, 
-                username: str = Form(...), 
-                password: str = Form(...)):
-    existing_user = db.session.query(Users).filter(Users.username == username, Users.password == password).first()
-    if existing_user:
-        return RedirectResponse(url="/account", status_code=303)
-    else:
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
-    
+              username: str = Form(...), 
+              password: str = Form(...)):
+  existing_user = db.session.query(Users).filter(Users.username == username, Users.password == password).first()
+  if existing_user:
+      request.session["user"] = {"username": username, "email": existing_user.email}
+      response = RedirectResponse(url="/account", status_code=303)
+      return response
+  else:
+      return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
+
+
 @app.get('/account', response_class=HTMLResponse)
 async def account_page(request: Request):
-    logged_in_user = {"username": "DemoUser", "email": "demo@example.com"}
-    return templates.TemplateResponse("account.html", {"request": request, "user": logged_in_user, "error": None})
-
+  user = request.session.get("user")
+  if user:
+      return templates.TemplateResponse("account.html", {"request": request, "user": user, "error": None})
+  else:
+      return templates.TemplateResponse("account.html", {"request": request, "user": None, "error": "You are not logged in"})
+  
 @app.post('/account', response_class=HTMLResponse)
-async def change_pass(request: Request, user: SchemaUsers):
-    existing_user = db.session.query(Users).filter(Users.username == user.username, Users.password == user.password).first()
-    if not existing_user:
-        return templates.TemplateResponse("account.html", {"request": request, "error": "Incorrect current password"})
-    if user.new_password != user.confirm_password:
-        return templates.TemplateResponse("account.html", {"request": request, "error": "New password and confirm password do not match"})
-    existing_user.password = user.new_password
-    db.session.commit()   
-    return RedirectResponse(url="/account", status_code=303)
+async def change_pass(request: Request, 
+                    current_password: str = Form(...), 
+                    new_password: str = Form(...), 
+                    confirm_password: str = Form(...)):
+ user = {"username": request.session.get("user")["username"], "password": current_password}
+ existing_user = db.session.query(Users).filter(Users.username == user["username"], Users.password == user["password"]).first()
+ if not existing_user:
+     return templates.TemplateResponse("account.html", {"request": request, "error": "Incorrect current password"})
+ if new_password != confirm_password:
+     return templates.TemplateResponse("account.html", {"request": request, "error": "New password and confirm password do not match"})
+ existing_user.password = new_password
+ db.session.commit() 
+ return RedirectResponse(url="/account", status_code=303)
 
 # Next snippets are for http://127.0.0.1:8000/docs#/ 
 @app.post("/add-user/", response_model=SchemaUsers)

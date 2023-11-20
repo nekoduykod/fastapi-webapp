@@ -1,4 +1,4 @@
-pip install fastapi fastapi-sqlalchemy pydantic alembic psycopg2 uvicorn python-dotenv
+pip install fastapi fastapi-sqlalchemy pydantic alembic psycopg2 uvicorn python-dotenv starlette
 
 docker-compose run app alembic revision --autogenerate -m "New Migration" 
 
