@@ -25,6 +25,20 @@ app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 async def home(request: Request):     # I can use only def in these snippets
     return templates.TemplateResponse("home.html", {"request": request})
 
+@app.get('/register', response_class=HTMLResponse)
+async def registr_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+                                        
+@app.post("/register", response_class=HTMLResponse)
+async def register(request: Request, user: SchemaUsers):
+    existing_user = db.session.query(Users).filter(Users.username == user.username).first()
+    if existing_user:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Username already exists"})
+    db_user = ModelUsers(username=user.username, password=user.password, email=user.email)
+    db.session.add(db_user)
+    db.session.commit()
+    return RedirectResponse(url="/login", status_code=303)
+
 @app.get('/login', response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
@@ -36,28 +50,6 @@ async def login(request: Request, user: SchemaUsers):
         return RedirectResponse(url="/account", status_code=303)
     else:
         return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
-
-# @app.post('/login', response_class=HTMLResponse)
-# async def login(request: Request, user: SchemaUsers = Depends(), db: Session = Depends(get_db)):
-#     existing_user = db.query(Users).filter(Users.username == user.username, Users.password == user.password).first()
-#     if existing_user:
-#         return RedirectResponse(url="/account", status_code=303)
-#     else:
-#         return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
-
-@app.get('/register', response_class=HTMLResponse)
-async def registr_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
-                                        # I can use only def in these snippets
-@app.post("/register", response_class=HTMLResponse)
-async def register(request: Request, user: SchemaUsers):
-    existing_user = db.session.query(Users).filter(Users.username == user.username).first()
-    if existing_user:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Username already exists"})
-    db_user = ModelUsers(username=user.username, password=user.password, email=user.email)
-    db.session.add(db_user)
-    db.session.commit()
-    return RedirectResponse(url="/login", status_code=303)
 
 @app.get('/account', response_class=HTMLResponse)
 async def account_page(request: Request):
@@ -102,4 +94,4 @@ def get_stat():
     return stats
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

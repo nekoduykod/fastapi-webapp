@@ -11,40 +11,18 @@
 <body>
     <h1>Register Page</h1>
 
-<form id="registerForm">
-    <label for="username">Username:</label>
-    <input type="text" name="username" id="username" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" required>
-    <br>
-    <label for="email">Email:</label>
-    <input type="email" name="email" id="email" required>
-    <br>
-    <button type="button" onclick="registerUser()">Register</button>
-</form>
-
-<script>
-    async function registerUser() {
-        const form = document.getElementById('registerForm');
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
-
-        const response = await fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',  // Change content type here
-            },
-            body: JSON.stringify(data),  // Serialize the data as JSON
-        });
-
-        const result = await response.json();
-        console.log(result);
-    }
-</script>
+    <form method="POST" action="/register">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required>
+        <br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required>
+        <br>
+        <button type="submit">Register</button>
+    </form>
 </body>
 
 </html>
