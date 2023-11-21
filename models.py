@@ -13,8 +13,18 @@ class Users(Base):
     email = Column(String, unique=True, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-
+    
+    sites = relationship("Site", back_populates="user")
     user_statistics = relationship("Statistics", back_populates="user")
+
+class Site(Base):
+    __tablename__ = "sites"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True)
+    url = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id"))
+
+    user = relationship("Users", back_populates="sites")
 
 class Statistics(Base):
     __tablename__ = "statistics"
@@ -27,4 +37,3 @@ class Statistics(Base):
     data_received = Column(Integer)
 
     user = relationship("Users", back_populates="user_statistics")
- 

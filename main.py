@@ -11,6 +11,7 @@ from models import Users
 from models import Users as ModelUsers
 from models import Statistics
 from models import Statistics as ModelStatistics
+from models import Site as ModelSite
 
 from schema import Users as SchemaUsers
 from schema import Statistics as SchemaStatistics
@@ -23,11 +24,10 @@ templates = Jinja2Templates(directory="templates")
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 app.add_middleware(SessionMiddleware, secret_key="bananabomb")
 
-
 @app.get('/', response_class=HTMLResponse)
 async def home(request: Request):     # I can use only def in these snippets
     return templates.TemplateResponse("home.html", {"request": request})
- 
+
 @app.get('/register', response_class=HTMLResponse)
 async def registr_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
@@ -56,10 +56,10 @@ async def login(request: Request,
               password: str = Form(...)):
   existing_user = db.session.query(Users).filter(Users.username == username, Users.password == password).first()
   if existing_user:
-      request.session["user"] = {"username": username, "email": existing_user.email}
+      request.session["user"] = {"username": username, "email": existing_user.email, "id": existing_user.id}
       response = RedirectResponse(url="/account", status_code=303)
       return response
-  else:
+  else: 
       return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
 
 
@@ -85,6 +85,49 @@ async def change_pass(request: Request,
  existing_user.password = new_password
  db.session.commit() 
  return RedirectResponse(url="/account", status_code=303)
+
+@app.post("/create_site")
+async def create_site(request: Request, site_name: str = Form(...), site_url: str = Form(...)):
+  user = request.session.get("user")
+  if not user:
+      return RedirectResponse("/login")
+  site = ModelSite(name=site_name, url=site_url, user_id=user["id"])
+  db.session.add(site)
+  db.session.commit()
+  return RedirectResponse(url="/account", status_code=303)
+
+@app.get("/update_sites")
+async def update_sites(request: Request):
+ user = request.session.get("user")
+ if user:
+   user_id = user["id"]
+   sites = db.session.query(ModelSite).filter(ModelSite.user_id == user_id).all()
+   return {"sites": [{"name": site.name, "id": site.id} for site in sites]}
+ else:
+   return {"error": "You are not logged in"}
+
+@app.get("/go-to-site/{site_id}")
+async def go_to_site(request: Request, site_id: int):
+   user = request.session.get("user")
+   if not user:
+       return RedirectResponse("/login")
+   site = db.session.query(ModelSite).filter(ModelSite.id == site_id, ModelSite.user_id == user["id"]).first()
+   if site:
+       return RedirectResponse(site.url)
+   else:
+       return RedirectResponse("/account")
+   # It goes to site but need to think of the intermediate VPN logic 
+@app.get("/{user_site_name}/{routes_on_original_site}", response_class=RedirectResponse)
+async def redirect_to_site(user_site_name: str, routes_on_original_site: str, request: Request):
+ user = request.session.get("user")
+ if not user:
+    return RedirectResponse("/login")
+ site = db.session.query(ModelSite).filter(ModelSite.name == user_site_name, ModelSite.user_id == user["id"]).first()
+ if site:
+     return RedirectResponse(f"{site.url}/{routes_on_original_site}")
+ else:
+    return RedirectResponse("/account")
+ 
 
 # Next snippets are for http://127.0.0.1:8000/docs#/ 
 @app.post("/add-user/", response_model=SchemaUsers)

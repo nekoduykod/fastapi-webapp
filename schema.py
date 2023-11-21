@@ -8,6 +8,13 @@ class Users(BaseModel):
     class Config:
         orm_mode = True 
 
+class Site(BaseModel):
+    name: str
+    url: str
+
+    class Config:
+       orm_mode = True
+
 class Statistics(BaseModel):
     id: int   
     user_id: int   

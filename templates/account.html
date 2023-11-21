@@ -2,32 +2,73 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account</title>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>My Account</title>
 </head>
 
 <body>
-    <h1>Welcome, {{ user.username }}!</h1>
-    <p>Email: {{ user.email }}</p>
+   <h1>Welcome, {{ user.username }}!</h1>
+   <p>Email: {{ user.email }}</p>
+   <h2>Create Site</h2>
+   <form method="POST" action="/create_site">
+      <label for="site_name">Site Name:</label>
+      <input type="text" name="site_name" id="site_name" required>
+      <br>
+      <label for="site_url">Site URL:</label>
+      <input type="text" name="site_url" id="site_url" required>
+      <br>
+      <button type="submit">Create Site</button>
+   </form>
 
-    <h2>Change Password</h2>
-    <p style="color: red;">{{ error }}</p>
-    <form method="POST" action="/account">
-        <label for="current_password">Current Password:</label>
-        <input type="password" name="current_password" id="current_password" required>
-        <br>
-        <label for="new_password">New Password:</label>
-        <input type="password" name="new_password" id="new_password" required>
-        <br>
-        <label for="confirm_password">Confirm Password:</label>
-        <input type="password" name="confirm_password" id="confirm_password" required>
-        <br>
-        <button type="submit">Change Password</button>
-    </form>
+   <h2>Your Sites</h2>
+   <ul id="sites-list">
+       {% for site in sites %}
+           <li>{{ site.name }} - <a href="/go-to-site/{{ site.id }}">Go to Site</a></li>
+       {% endfor %}
+   </ul>
+   <button id="reload-button">Reload Sites</button>
 
-    <a href="/">Logout</a>
+   <h2>Change Password</h2>
+   <p style="color: red;">{{ error }}</p>
+   <form method="POST" action="/account">
+       <label for="current_password">Current Password:</label>
+       <input type="password" name="current_password" id="current_password" required>
+       <br>
+       <label for="new_password">New Password:</label>
+       <input type="password" name="new_password" id="new_password" required>
+       <br>
+       <label for="confirm_password">Confirm Password:</label>
+       <input type="password" name="confirm_password" id="confirm_password" required>
+       <br>
+       <button type="submit">Change Password</button>
+   </form>
+
+   <a href="/">Logout</a>
+
+   <script>
+   document.getElementById('reload-button').addEventListener('click', function() {
+       fetch('/update_sites')
+           .then(response => response.json())
+           .then(data => {
+               // Clear the current list of sites
+               var sitesList = document.getElementById('sites-list');
+               sitesList.innerHTML = '';
+
+               // Add the new sites to the list
+               data.sites.forEach(site => {
+                  var listItem = document.createElement('li');
+                  listItem.textContent = site.name + ' - ';
+                  var link = document.createElement('a');
+                  link.href = '/go-to-site/' + site.id;
+                  link.textContent = 'Go to Site';
+                  listItem.appendChild(link);
+                  sitesList.appendChild(listItem);
+               });
+           });
+   });
+   </script>
 </body>
 
 </html>
