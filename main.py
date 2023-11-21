@@ -116,19 +116,27 @@ async def go_to_site(request: Request, site_id: int):
        return RedirectResponse(site.url)
    else:
        return RedirectResponse("/account")
- 
- # Will think how to implement this below
-@app.get("/{user_site_name}/{routes_on_original_site}", response_class=RedirectResponse)
-async def redirect_to_site(user_site_name: str, routes_on_original_site: str, request: Request):
- user = request.session.get("user")
- if not user:
-    return RedirectResponse("/login")
- site = db.session.query(ModelSite).filter(ModelSite.name == user_site_name, ModelSite.user_id == user["id"]).first()
- if site:
-     return RedirectResponse(f"{site.url}/{routes_on_original_site}")
- else:
-    return RedirectResponse("/account")
- 
+
+  
+# Below snippet yields => http://127.0.0.1:8000/ComeBackAndAlive/, 
+# but when I move in the external site - e.g.http://127.0.0.1:8000/ComeBackAndAlive/materials, 
+# returns URL http://127.0.0.1:8000/materials/ instead - and {"error":"Site not found"}
+
+# import requests
+
+# @app.post("/")
+# async def handle_post_request(request: Request):
+#    pass
+# @app.get("/{site_name}/{path:path}")
+# async def redirect_to_site(site_name: str, path: str):
+#  site = db.session.query(ModelSite).filter(ModelSite.name == site_name).first()
+#  if site:
+#   original_site_response = requests.get(f"{site.url}/{path}")
+#   original_site_content = original_site_response.text
+#   return HTMLResponse(content=original_site_content)
+#  else:
+#   return {"error": "Site not found"}
+
 
 # Next snippets are for http://127.0.0.1:8000/docs#/ 
 @app.post("/add-user/", response_model=SchemaUsers)
