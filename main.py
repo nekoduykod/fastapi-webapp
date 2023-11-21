@@ -116,7 +116,8 @@ async def go_to_site(request: Request, site_id: int):
        return RedirectResponse(site.url)
    else:
        return RedirectResponse("/account")
-   # It goes to site but need to think of the intermediate VPN logic 
+ 
+ # Will think how to implement this below
 @app.get("/{user_site_name}/{routes_on_original_site}", response_class=RedirectResponse)
 async def redirect_to_site(user_site_name: str, routes_on_original_site: str, request: Request):
  user = request.session.get("user")
