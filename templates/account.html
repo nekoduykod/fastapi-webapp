@@ -52,11 +52,9 @@
        fetch('/update_sites')
            .then(response => response.json())
            .then(data => {
-               // Clear the current list of sites
                var sitesList = document.getElementById('sites-list');
                sitesList.innerHTML = '';
 
-               // Add the new sites to the list
                data.sites.forEach(site => {
                   var listItem = document.createElement('li');
                   listItem.textContent = site.name + ' - ';

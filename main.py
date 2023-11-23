@@ -1,12 +1,12 @@
 import uvicorn
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse 
 from fastapi.templating import Jinja2Templates 
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 from dotenv import load_dotenv
 from starlette.middleware.sessions import SessionMiddleware
 import os
- 
+
 from models import Users
 from models import Users as ModelUsers
 from models import Statistics
@@ -62,7 +62,6 @@ async def login(request: Request,
   else: 
       return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
 
-
 @app.get('/account', response_class=HTMLResponse)
 async def account_page(request: Request):
   user = request.session.get("user")
@@ -117,28 +116,38 @@ async def go_to_site(request: Request, site_id: int):
    else:
        return RedirectResponse("/account")
 
-  
-# Below snippet yields => http://127.0.0.1:8000/ComeBackAndAlive/, 
-# but when I move in the external site - e.g.http://127.0.0.1:8000/ComeBackAndAlive/materials, 
-# returns URL http://127.0.0.1:8000/materials/ instead - and {"error":"Site not found"}
+''' Below snippet yields => http://127.0.0.1:8000/ComeBackAndAlive/, but when 
+I move in the external site - e.g clicking a Materials department of a w/s 
+(http://127.0.0.1:8000/ComeBackAndAlive/materials), it returns URL 
+ http://127.0.0.1:8000/materials/ instead, with {"error":"Site not found"} '''
 
-# import requests
+# import requests 
+# @app.get("/go-to-site/{site_id}")
+# async def go_to_site(request: Request, site_id: int):
+#   user = request.session.get("user")
+#   if not user:
+#       return RedirectResponse("/login")
+#   site = db.session.query(ModelSite).filter(ModelSite.id == site_id, ModelSite.user_id == user["id"]).first()
+#   if site:
+#       return RedirectResponse(f"http://127.0.0.1:8000/{site.name}") # Redirect to your site
+#   else:
+#       return RedirectResponse("/account")
 
 # @app.post("/")
 # async def handle_post_request(request: Request):
 #    pass
 # @app.get("/{site_name}/{path:path}")
 # async def redirect_to_site(site_name: str, path: str):
-#  site = db.session.query(ModelSite).filter(ModelSite.name == site_name).first()
-#  if site:
-#   original_site_response = requests.get(f"{site.url}/{path}")
-#   original_site_content = original_site_response.text
-#   return HTMLResponse(content=original_site_content)
-#  else:
-#   return {"error": "Site not found"}
+#    site = db.session.query(ModelSite).filter(ModelSite.name == site_name).first()
+#    if site:
+#        original_site_response = requests.get(f"{site.url}/{path}")
+#        original_site_content = original_site_response.text
+#        return HTMLResponse(content=original_site_content)
+#    else:
+#        return {"error": "Site not found"}
 
 
-# Next snippets are for http://127.0.0.1:8000/docs#/ 
+# Next snippets are for Swagger UI http://127.0.0.1:8000/docs#/ 
 @app.post("/add-user/", response_model=SchemaUsers)
 def add_user(user: SchemaUsers):
     db_user = ModelUsers(username=user.username, password=user.password, email=user.email)
