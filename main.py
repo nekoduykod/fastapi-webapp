@@ -1,5 +1,6 @@
 import uvicorn
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse, RedirectResponse 
 from fastapi.templating import Jinja2Templates 
 from fastapi_sqlalchemy import DBSessionMiddleware, db
@@ -15,12 +16,13 @@ from models import Site as ModelSite
 
 from schema import Users as SchemaUsers
 from schema import Statistics as SchemaStatistics
-
+ 
 load_dotenv(".env")
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 app.add_middleware(SessionMiddleware, secret_key="bananabomb")
 
@@ -61,7 +63,7 @@ async def login(request: Request,
       return response
   else: 
       return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
-
+   
 @app.get('/account', response_class=HTMLResponse)
 async def account_page(request: Request):
   user = request.session.get("user")
@@ -72,18 +74,22 @@ async def account_page(request: Request):
   
 @app.post('/account', response_class=HTMLResponse)
 async def change_pass(request: Request, 
-                    current_password: str = Form(...), 
-                    new_password: str = Form(...), 
-                    confirm_password: str = Form(...)):
+        current_password: str = Form(...), 
+        new_password: str = Form(...), 
+        confirm_password: str = Form(...)):
  user = {"username": request.session.get("user")["username"], "password": current_password}
  existing_user = db.session.query(Users).filter(Users.username == user["username"], Users.password == user["password"]).first()
  if not existing_user:
-     return templates.TemplateResponse("account.html", {"request": request, "error": "Incorrect current password"})
+    request.session["error"] = "Incorrect current password"
+    return templates.TemplateResponse("account.html", {"request": request, "user": user, "error": request.session.get('error')})
  if new_password != confirm_password:
-     return templates.TemplateResponse("account.html", {"request": request, "error": "New password and confirm password do not match"})
- existing_user.password = new_password
- db.session.commit() 
- return RedirectResponse(url="/account", status_code=303)
+    request.session["error"] = "New password and confirm password do not match"
+    return templates.TemplateResponse("account.html", {"request": request, "user": user, "error": request.session.get('error')})
+ else:
+    existing_user.password = new_password
+    db.session.commit() 
+    request.session["error"] = "Password changed successfully"
+    return templates.TemplateResponse("account.html", {"request": request, "user": user, "error": request.session.get('error')})
 
 @app.post("/create_site")
 async def create_site(request: Request, site_name: str = Form(...), site_url: str = Form(...)):
@@ -147,7 +153,7 @@ I move in the external site - e.g clicking a Materials department of a w/s
 #        return {"error": "Site not found"}
 
 
-# Next snippets are for Swagger UI http://127.0.0.1:8000/docs#/ 
+# These snippets are for Swagger UI http://127.0.0.1:8000/docs#/
 @app.post("/add-user/", response_model=SchemaUsers)
 def add_user(user: SchemaUsers):
     db_user = ModelUsers(username=user.username, password=user.password, email=user.email)

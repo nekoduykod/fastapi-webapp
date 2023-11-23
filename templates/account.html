@@ -6,21 +6,26 @@
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>My Account</title>
+   <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
 </head>
 
-<body>
-   <h1>Welcome, {{ user.username }}!</h1>
-   <p>Email: {{ user.email }}</p>
-   <h2>Create Site</h2>
-   <form method="POST" action="/create_site">
-      <label for="site_name">Site Name:</label>
-      <input type="text" name="site_name" id="site_name" required>
-      <br>
-      <label for="site_url">Site URL:</label>
-      <input type="text" name="site_url" id="site_url" required>
-      <br>
-      <button type="submit">Create Site</button>
-   </form>
+<body class="account-background">
+    <div class="header">
+        <h1>Welcome, {{ user.username }}!</h1>
+        <p>Email: {{ user.email }}</p>
+    </div>
+
+   <div class="content">
+       <h2>Create Site</h2>
+       <form method="POST" action="/create_site">
+          <label for="site_name">Site Name:</label>
+          <input type="text" name="site_name" id="site_name" required>
+          <br>
+          <label for="site_url">Site URL:</label>
+          <input type="text" name="site_url" id="site_url" required>
+          <br>
+          <button type="submit">Create Site</button>
+       </form>
 
    <h2>Your Sites</h2>
    <ul id="sites-list">
@@ -31,7 +36,17 @@
    <button id="reload-button">Reload Sites</button>
 
    <h2>Change Password</h2>
-   <p style="color: red;">{{ error }}</p>
+   {% if error %}
+       {% if "Incorrect current password" in error %}
+           <p style="color: red;">{{ error }}</p>
+       {% elif "New password and confirm password do not match" in error %}
+           <p style="color: red;">{{ error }}</p>
+       {% elif "Password changed successfully" in error %}
+           <p style="color: green;">{{ error }}</p>
+       {% else %}
+           <p>{{ error }}</p>
+       {% endif %}
+   {% endif %}
    <form method="POST" action="/account">
        <label for="current_password">Current Password:</label>
        <input type="password" name="current_password" id="current_password" required>
@@ -44,8 +59,12 @@
        <br>
        <button type="submit">Change Password</button>
    </form>
+   
+   </div>
 
-   <a href="/">Logout</a>
+   <div class="footer">
+       <a href="/" class="logout-link">Logout</a>
+   </div>
 
    <script>
    document.getElementById('reload-button').addEventListener('click', function() {
