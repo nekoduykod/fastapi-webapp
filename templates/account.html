@@ -26,6 +26,9 @@
           <br>
           <button type="submit">Create Site</button>
        </form>
+   
+   <h2>Need help?</h2>  
+   <button id="go-to-chatgpt">Message ChatGPT</button>
 
    <h2>Your Sites</h2>
    <ul id="sites-list">
@@ -85,6 +88,9 @@
                });
            });
    });
+   document.getElementById('go-to-chatgpt').addEventListener('click', function() {
+        window.location.href = '/chatgpt';
+    });
    </script>
 </body>
 
