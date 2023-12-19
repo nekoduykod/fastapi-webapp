@@ -31,9 +31,8 @@ app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 app.add_middleware(SessionMiddleware, secret_key="bananabomb")
 
 @app.get('/', response_class=HTMLResponse)
-async def home(request: Request):     # I can use only def in these snippets
+async def home(request: Request):      
     return templates.TemplateResponse("home.html", {"request": request})
-
 
 @app.get('/register', response_class=HTMLResponse)
 async def registr_page(request: Request):
@@ -53,7 +52,6 @@ async def register(request: Request,
     print("Registration successful. Redirecting to login.")
     return RedirectResponse(url="/login", status_code=303)
 
-
 @app.get('/login', response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
@@ -69,7 +67,6 @@ async def login(request: Request,
       return response
   else: 
       return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
-   
 
 @app.get('/account', response_class=HTMLResponse)
 async def account_page(request: Request):
@@ -97,7 +94,6 @@ async def change_pass(request: Request,
     db.session.commit() 
     request.session["error"] = "Password changed successfully"
     return templates.TemplateResponse("account.html", {"request": request, "user": user, "error": request.session.get('error')})
-
 
 def get_openai_api_key():
     return os.environ.get("OPENAI_API_KEY", "not-set-api-key")
@@ -160,7 +156,6 @@ async def chat_with_gpt(
 #         raise HTTPException(status_code=500, detail=f"Error generating response: {str(e)}")
 #     return {"generated_message": generated_message}
 
-
 @app.post("/create_site")
 async def create_site(request: Request, site_name: str = Form(...), site_url: str = Form(...)):
   user = request.session.get("user")
@@ -196,7 +191,6 @@ async def go_to_site(request: Request, site_id: int):
     Below one yields a proxy http://127.0.0.1:8000/ComeBackAndAlive/ w/s, but when 
     moving there - instead of e.g. http://127.0.0.1:8000/ComeBackAndAlive/materials, 
     it returns {"error":"Site not found"}, http://127.0.0.1:8000/materials/ '''
-
 # import requests 
 # @app.get("/go-to-site/{site_id}")
 # async def go_to_site(request: Request, site_id: int):
@@ -222,8 +216,7 @@ async def go_to_site(request: Request, site_id: int):
 #    else:
 #        return {"error": "Site not found"}
 
-
-''' Next snippets are for Swagger UI http://127.0.0.1:8000/docs#/ '''
+''' Next are for Swagger UI http://127.0.0.1:8000/docs#/ '''
 @app.post("/add-user/", response_model=SchemaUsers)
 def add_user(user: SchemaUsers):
     db_user = ModelUsers(username=user.username, password=user.password, email=user.email)
