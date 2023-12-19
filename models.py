@@ -26,14 +26,14 @@ class Site(Base):
 
     user = relationship("Users", back_populates="sites")
 
-class Statistics(Base):
-    __tablename__ = "statistics"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    timestamp = Column(DateTime(timezone=True), server_default=func.now())
-    page_transitions = Column(Integer)
-    vpn_site_transitions = Column(Integer)
-    data_sent = Column(Integer)
-    data_received = Column(Integer)
+# class Statistics(Base):
+#     __tablename__ = "statistics"
+#     id = Column(Integer, primary_key=True)
+#     user_id = Column(Integer, ForeignKey("users.id"))
+#     timestamp = Column(DateTime(timezone=True), server_default=func.now())
+#     page_transitions = Column(Integer)
+#     vpn_site_transitions = Column(Integer)
+#     data_sent = Column(Integer)
+#     data_received = Column(Integer)
 
-    user = relationship("Users", back_populates="user_statistics")
+#     user = relationship("Users", back_populates="user_statistics")
