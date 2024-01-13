@@ -34,10 +34,11 @@ app.add_middleware(SessionMiddleware, secret_key="bananabomb")
 async def home(request: Request):      
     return templates.TemplateResponse("home.html", {"request": request})
 
+
 @app.get('/register', response_class=HTMLResponse)
 async def registr_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
-                                     
+
 @app.post("/register", response_class=HTMLResponse)
 async def register(request: Request, 
                    username: str = Form(...), 
@@ -51,6 +52,7 @@ async def register(request: Request,
     db.session.commit()
     print("Registration successful. Redirecting to login.")
     return RedirectResponse(url="/login", status_code=303)
+
 
 @app.get('/login', response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -67,6 +69,7 @@ async def login(request: Request,
       return response
   else: 
       return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid username or password"})
+
 
 @app.get('/account', response_class=HTMLResponse)
 async def account_page(request: Request):
@@ -95,12 +98,14 @@ async def change_pass(request: Request,
     request.session["error"] = "Password changed successfully"
     return templates.TemplateResponse("account.html", {"request": request, "user": user, "error": request.session.get('error')})
 
+
 def get_openai_api_key():
     return os.environ.get("OPENAI_API_KEY", "not-set-api-key")
 
 class OpenAIDependency:
    def __init__(self, api_key: str = Depends(get_openai_api_key)):
       self.client = openai.OpenAI(api_key=api_key)
+
 
 @app.get('/chatgpt', response_class=HTMLResponse)
 async def gpt_page(request: Request):
@@ -132,6 +137,7 @@ async def chat_with_gpt(
         raise HTTPException(status_code=500, detail=f"Error generating response: {str(e)}")
     return {"generated_message": generated_message}
 
+
 @app.post("/create_site")
 async def create_site(request: Request, site_name: str = Form(...), site_url: str = Form(...)):
   user = request.session.get("user")
@@ -152,6 +158,7 @@ async def update_sites(request: Request):
  else:
    return {"error": "You are not logged in"}
 
+
 @app.get("/go-to-site/{site_id}")
 async def go_to_site(request: Request, site_id: int):
    user = request.session.get("user")
@@ -162,6 +169,7 @@ async def go_to_site(request: Request, site_id: int):
        return RedirectResponse(site.url)
    else:
        return RedirectResponse("/account")
+
 
 ''' Next are for Swagger UI http://127.0.0.1:8000/docs#/ '''
 @app.post("/add-user/", response_model=SchemaUsers)
