@@ -9,13 +9,12 @@ class Users(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True)
-    password = Column(String(255))  # 255, if hashing
+    password = Column(String(255))
     email = Column(String, unique=True, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     sites = relationship("Site", back_populates="user")
-
 
 class Site(Base):
     __tablename__ = "sites"
