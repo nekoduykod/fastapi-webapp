@@ -17,18 +17,18 @@ from models import Site as ModelSite
 
 import uvicorn
 
-load_dotenv(".env")
+load_dotenv("../.env")
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="../static"), name="static")
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 app.add_middleware(SessionMiddleware, secret_key="bananabomb")
 
 client = OpenAI()
 
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="../templates")
 
 
 @app.get('/', response_class=HTMLResponse)

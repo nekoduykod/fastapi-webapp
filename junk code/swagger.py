@@ -1,5 +1,5 @@
 ''' Swagger UI http://127.0.0.1:8000/docs#/ '''
-from models import Users as ModelUsers
+from app.models import Users as ModelUsers
 
 from schema import Users as SchemaUsers
 
