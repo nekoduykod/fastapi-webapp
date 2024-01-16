@@ -21,7 +21,8 @@ CREATE TABLE sites (
 );
 
 
-uvicorn main:app --reload
+cd webapp_with_openai
+uvicorn app.main:app --reload
 
 
 alembic init alembic
