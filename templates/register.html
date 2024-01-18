@@ -7,10 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
 </head>
 
 <body class="register-background centered">
     <h1>Registration</h1>
+    {% if error and "Nickname is taken. Please choose another one" in error %}
+        <p style="color: rgb(255, 255, 255);">{{ error }}</p>
+    {% endif %}
     <div class="form-container">
         <form method="POST" action="/register">
             <label for="username">Username:</label>
