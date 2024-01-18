@@ -25,6 +25,9 @@ cd webapp_with_openai
 uvicorn app.main:app --reload
 
 
+pytest tests/test_main.py
+
+
 alembic init alembic
 
 docker-compose run app alembic revision --autogenerate -m "New Migration" 
