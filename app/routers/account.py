@@ -25,6 +25,7 @@ async def account_page(request: Request):
                                             "user": None, 
                                            "error": "You are not logged in"})
 
+
 @router.post('/account', response_class=HTMLResponse)
 async def change_pass(request: Request,
              current_password: str = Form(...),
@@ -36,7 +37,6 @@ async def change_pass(request: Request,
  existing_user = db.session.query(ModelUsers) \
                           .filter(ModelUsers.username == user["username"], 
                                   ModelUsers.password == user["password"]).first()
-
  if not existing_user:
     request.session["error"] = "Incorrect current password"
     return templates.TemplateResponse("account.html", 

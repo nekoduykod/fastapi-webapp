@@ -3,7 +3,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 
+
 Base = declarative_base()
+
 
 class Users(Base):
     __tablename__ = "users"
@@ -15,6 +17,7 @@ class Users(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     sites = relationship("Shortcuts", back_populates="user")
+
 
 class Shortcuts(Base):
     __tablename__ = "sites"

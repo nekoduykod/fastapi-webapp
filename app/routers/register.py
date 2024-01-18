@@ -15,12 +15,12 @@ templates = Jinja2Templates(directory="templates")
 async def registr_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
+
 @router.post("/register", response_class=HTMLResponse)
 async def register(request: Request, 
                   username: str = Form(...),
                   password: str = Form(...),
                      email: str = Form(...)):
-    
     existing_user = db.session.query(ModelUsers) \
                              .filter(ModelUsers.username == username).first()
     if existing_user:

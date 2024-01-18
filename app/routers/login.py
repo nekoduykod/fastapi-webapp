@@ -15,15 +15,14 @@ templates = Jinja2Templates(directory="templates")
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+
 @router.post("/login", response_class=HTMLResponse)
 async def login(request: Request, 
                username: str = Form(...),
                password: str = Form(...)):
-  
   existing_user = db.session.query(ModelUsers) \
                            .filter(ModelUsers.username == username,
                                    ModelUsers.password == password).first()
-
   if existing_user:
       request.session["user"] = {"username": username,
                                     "email": existing_user.email,

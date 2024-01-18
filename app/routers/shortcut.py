@@ -13,7 +13,7 @@ templates = Jinja2Templates(directory="templates")
 
 @router.post("/create-shortcut")
 async def create_shortcut(request: Request,
-                    shortcut_title: str = Form(...),
+                   shortcut_title: str = Form(...),
                      shortcut_url: str = Form(...)):
   user = request.session.get("user")
   if user:
@@ -32,14 +32,16 @@ async def update_shortcuts(request: Request):
    user_id = user["id"]
    sites = db.session.query(ModelShortcuts) \
                      .filter(ModelShortcuts.user_id == user_id).all()
-   return {"sites": [{"name": site.name, "id": site.id} for site in sites]}
+   return {"sites": [{"name": site.name, 
+                        "id": site.id} 
+                          for site in sites]}
  else:
    return {"error": "You are not logged in"}
+
 
 @router.get("/go-to-shortcut/{site_id}")
 async def go_to_shortcut(request: Request,
                          site_id: int):
-   
    user = request.session.get("user")
    if not user:
        return RedirectResponse("/login")

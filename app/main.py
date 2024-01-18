@@ -13,14 +13,12 @@ import uvicorn
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv(".env")
 
 
 app = FastAPI()
-
-
 templates = Jinja2Templates(directory="templates")
+
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -38,6 +36,7 @@ app.include_router(chatgpt.router)
 @app.get('/', response_class=HTMLResponse)
 async def home(request: Request):      
     return templates.TemplateResponse("home.html", {"request": request})
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
