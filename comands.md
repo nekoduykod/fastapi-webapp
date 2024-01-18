@@ -11,9 +11,9 @@ CREATE TABLE users (
     updated_at TIMESTAMPTZ DEFAULT current_timestamp
 );
 
-CREATE TABLE shortcuts (    #
+CREATE TABLE shortcuts (
     id SERIAL PRIMARY KEY,
-    title VARCHAR UNIQUE NOT NULL,  #
+    title VARCHAR UNIQUE NOT NULL,
     url VARCHAR NOT NULL,
     user_id INTEGER REFERENCES users(id),
     CONSTRAINT shorcut_title_key UNIQUE (title),
