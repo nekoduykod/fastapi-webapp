@@ -16,14 +16,13 @@ class Users(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    sites = relationship("Shortcuts", back_populates="user")
-
+    shortcuts = relationship("Shortcuts", back_populates="users")
 
 class Shortcuts(Base):
-    __tablename__ = "sites"
+    __tablename__ = "shortcuts"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True)
+    title = Column(String, unique=True)
     url = Column(String)
-
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("Users", back_populates="sites", foreign_keys=[user_id])
+
+    users = relationship("Users", back_populates="shortcuts", foreign_keys=[user_id])

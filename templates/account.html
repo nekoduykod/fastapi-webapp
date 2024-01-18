@@ -32,9 +32,9 @@
    <button id="go-to-chatgpt">Message ChatGPT</button>
 
    <h2>Your shortcuts</h2>
-   <ul id="sites-list">
-       {% for site in sites %}
-           <li>{{ site.name }} - <a href="/go-to-shortcut/{{ site.id }}">Link</a></li>
+   <ul id="shortcuts-list">
+       {% for shortcut in shortcuts %}
+           <li>{{ shortcut.title }} - <a href="/go-to-shortcut/{{ shortcut.id }}">Link</a></li>
        {% endfor %}
    </ul>
    <button id="reload-button">Reload shortcuts</button>
@@ -75,17 +75,17 @@
        fetch('/update-shortcuts')
            .then(response => response.json())
            .then(data => {
-               var sitesList = document.getElementById('sites-list');
-               sitesList.innerHTML = '';
+               var shortcutsList = document.getElementById('shortcuts-list');
+               shortcutsList.innerHTML = '';
 
-               data.sites.forEach(site => {
+               data.shortcuts.forEach(shortcut => {
                   var listItem = document.createElement('li');
-                  listItem.textContent = site.name + ' - ';
+                  listItem.textContent = shortcut.title + ' - ';
                   var link = document.createElement('a');
-                  link.href = '/go-to-shortcut/' + site.id;
+                  link.href = '/go-to-shortcut/' + shortcut.id;
                   link.textContent = 'Link';
                   listItem.appendChild(link);
-                  sitesList.appendChild(listItem);
+                  shortcutsList.appendChild(listItem);
                });
            });
    });

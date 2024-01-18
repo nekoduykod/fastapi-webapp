@@ -11,13 +11,13 @@ CREATE TABLE users (
     updated_at TIMESTAMPTZ DEFAULT current_timestamp
 );
 
-CREATE TABLE sites (
+CREATE TABLE shortcuts (    #
     id SERIAL PRIMARY KEY,
-    name VARCHAR UNIQUE NOT NULL,
+    title VARCHAR UNIQUE NOT NULL,  #
     url VARCHAR NOT NULL,
     user_id INTEGER REFERENCES users(id),
-    CONSTRAINT sites_name_key UNIQUE (name),
-    CONSTRAINT sites_user_id_fkey_new FOREIGN KEY (user_id) REFERENCES users(id)
+    CONSTRAINT shorcut_title_key UNIQUE (title),
+    CONSTRAINT shortcut_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 

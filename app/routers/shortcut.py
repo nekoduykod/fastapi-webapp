@@ -17,8 +17,8 @@ async def create_shortcut(request: Request,
                      shortcut_url: str = Form(...)):
   user = request.session.get("user")
   if user:
-     site = ModelShortcuts(name=shortcut_title, url=shortcut_url, user_id=user["id"])
-     db.session.add(site)
+     shortcut = ModelShortcuts(title=shortcut_title, url=shortcut_url, user_id=user["id"])
+     db.session.add(shortcut)
      db.session.commit()
      return RedirectResponse(url="/account", status_code=303)
   else:
@@ -27,28 +27,28 @@ async def create_shortcut(request: Request,
 
 @router.get("/update-shortcuts")
 async def update_shortcuts(request: Request):
- user = request.session.get("user")
- if user:
-   user_id = user["id"]
-   sites = db.session.query(ModelShortcuts) \
-                     .filter(ModelShortcuts.user_id == user_id).all()
-   return {"sites": [{"name": site.name, 
-                        "id": site.id} 
-                          for site in sites]}
- else:
-   return {"error": "You are not logged in"}
+   user = request.session.get("user")
+   if user:
+      user_id = user["id"]
+      shortcuts = db.session.query(ModelShortcuts) \
+                           .filter(ModelShortcuts.user_id == user_id).all()
+      return {"shortcuts": [{"title": shortcut.title, 
+                               "id": shortcut.id} 
+                            for shortcut in shortcuts]}
+   else:
+      return {"error": "You are not logged in"}
 
 
-@router.get("/go-to-shortcut/{site_id}")
+@router.get("/go-to-shortcut/{shortcut_id}")
 async def go_to_shortcut(request: Request,
-                         site_id: int):
+                         shortcut_id: int):
    user = request.session.get("user")
    if not user:
        return RedirectResponse("/login")
-   site = db.session.query(ModelShortcuts) \
-                    .filter(ModelShortcuts.id == site_id,
+   shortcuts = db.session.query(ModelShortcuts) \
+                    .filter(ModelShortcuts.id == shortcut_id,
                             ModelShortcuts.user_id == user["id"]).first()
-   if site:
-       return RedirectResponse(site.url)
+   if shortcuts:
+       return RedirectResponse(shortcuts.url)
    else:
        return RedirectResponse("/account")
