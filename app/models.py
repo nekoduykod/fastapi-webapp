@@ -14,9 +14,9 @@ class Users(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
-    sites = relationship("Site", back_populates="user")
+    sites = relationship("Shortcuts", back_populates="user")
 
-class Site(Base):
+class Shortcuts(Base):
     __tablename__ = "sites"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True)

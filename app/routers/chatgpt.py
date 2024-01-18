@@ -1,9 +1,8 @@
-from fastapi import FastAPI, Request, HTTPException, Form, Depends, APIRouter
+from fastapi import Request, HTTPException, Form, Depends, APIRouter
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
 import openai
-from openai import OpenAI
 
 from dotenv import load_dotenv
 import os
@@ -24,6 +23,7 @@ class OpenAIDependency:
 
 client = OpenAIDependency().client
 
+
 @router.get('/chatgpt', response_class=HTMLResponse)
 async def gpt_page(request: Request):
    return templates.TemplateResponse("gpt.html", {"request": request})
@@ -41,7 +41,7 @@ async def chat_with_gpt(request: Request,
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": message}],
             stream=True,
-            max_tokens=10) # Ліміт
+            max_tokens=10) # Ліміт відповіді
         
         generated_message = ""
         async for chunk in stream:

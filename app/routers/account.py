@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Request, Form, APIRouter
+from fastapi import Request, Form, APIRouter
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from fastapi_sqlalchemy import db
 
 from app.models import Users as ModelUsers
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -45,14 +46,14 @@ async def change_pass(request: Request,
  if new_password != confirm_password:
     request.session["error"] = "New password and confirm password do not match"
     return templates.TemplateResponse("account.html", 
-                                      {"request": request, 
+                                      {"request": request,
                                           "user": user, 
                                          "error": request.session.get('error')})
  else:
     existing_user.password = new_password
-    db.session.commit() 
+    db.session.commit()
     request.session["error"] = "Password changed successfully"
-    return templates.TemplateResponse("account.html", 
-                                     {"request": request, 
-                                         "user": user, 
+    return templates.TemplateResponse("account.html",
+                                     {"request": request,
+                                         "user": user,
                                         "error": request.session.get('error')})

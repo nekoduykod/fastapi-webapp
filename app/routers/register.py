@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, APIRouter
+from fastapi import Request, Form, APIRouter
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -24,12 +24,13 @@ async def register(request: Request,
     existing_user = db.session.query(ModelUsers) \
                              .filter(ModelUsers.username == username).first()
     if existing_user:
+        request.session["error"] = "Nickname is taken. Please choose another one"
         return templates.TemplateResponse("register.html",
                                           {"request": request, 
-                                             "error": "Username already exists"})
-    
-    db_user = ModelUsers(username=username, password=password, email=email)
-    db.session.add(db_user)
-    db.session.commit()
-    print("Registration successful. Redirecting to login.")
-    return RedirectResponse(url="/login", status_code=303)
+                                             "error": request.session.get('error')})
+    else:
+        db_user = ModelUsers(username=username, password=password, email=email)
+        db.session.add(db_user)
+        db.session.commit()
+        print("Registration successful. Redirecting to login.")
+        return RedirectResponse(url="/login", status_code=303)

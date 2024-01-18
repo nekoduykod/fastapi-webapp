@@ -8,15 +8,19 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from .routers import login, register, account, shortcut, chatgpt
 
+import uvicorn
+
 from dotenv import load_dotenv
 import os
 
-import uvicorn
 
 load_dotenv(".env")
 
+
 app = FastAPI()
 
+
+templates = Jinja2Templates(directory="templates")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -29,8 +33,6 @@ app.include_router(login.router)
 app.include_router(account.router)
 app.include_router(shortcut.router)
 app.include_router(chatgpt.router)
-
-templates = Jinja2Templates(directory="templates")
 
 
 @app.get('/', response_class=HTMLResponse)

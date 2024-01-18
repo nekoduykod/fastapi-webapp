@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, APIRouter
+from fastapi import Request, Form, APIRouter
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -31,6 +31,7 @@ async def login(request: Request,
       response = RedirectResponse(url="/account", status_code=303)
       return response
   else:
-      return templates.TemplateResponse("login.html", 
-                                       {"request": request, 
-                                          "error": "Invalid username or password"})
+      request.session["error"] = "Invalid login or password"
+      return templates.TemplateResponse("login.html",
+                                       {"request": request,
+                                          "error": request.session.get('error')})
