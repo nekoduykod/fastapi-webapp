@@ -8,8 +8,6 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from .routers import login, register, account, shortcut, chatgpt
 
-import uvicorn
-
 from dotenv import load_dotenv
 import os
 
