@@ -17,20 +17,19 @@ async def login_page(request: Request):
 
 
 @router.post("/login", response_class=HTMLResponse)
-async def login(request: Request, 
-               username: str = Form(...),
-               password: str = Form(...)):
-  existing_user = db.session.query(ModelUsers) \
-                           .filter(ModelUsers.username == username,
-                                   ModelUsers.password == password).first()
-  if existing_user:
-      request.session["user"] = {"username": username,
-                                    "email": existing_user.email,
-                                       "id": existing_user.id}
-      response = RedirectResponse(url="/account", status_code=303)
-      return response
-  else:
-      request.session["error"] = "Invalid login or password"
-      return templates.TemplateResponse("login.html",
-                                       {"request": request,
-                                          "error": request.session.get('error')})
+async def login(request: Request,
+                username: str = Form(...),
+                password: str = Form(...)):
+    existing_user = db.session.query(ModelUsers) \
+                             .filter(ModelUsers.username == username).first()
+
+    if existing_user and existing_user.verify_password(password):
+        request.session["user"] = {"username": username,
+                                   "email": existing_user.email,
+                                   "id": existing_user.id}
+        response = RedirectResponse(url="/account", status_code=303)
+        return response
+    else:
+        return templates.TemplateResponse("login.html",
+                                          {"request": request,
+                                           "error": "Invalid login or password"})
