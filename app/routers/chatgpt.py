@@ -1,4 +1,4 @@
-from fastapi import Request, HTTPException, Form, Depends, APIRouter
+from fastapi import APIRouter, Request, HTTPException, Form, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
@@ -7,7 +7,7 @@ import openai
 from dotenv import load_dotenv
 import os
 
-load_dotenv("../../.env")
+load_dotenv(".env")
 
 
 router = APIRouter()
