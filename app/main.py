@@ -21,7 +21,7 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
-app.add_middleware(SessionMiddleware, secret_key="bananabomb")
+app.add_middleware(SessionMiddleware, secret_key=os.environ.get("MIDDLEWARE_SECRET_KEY"))
 
 app.include_router(register.router)
 app.include_router(login.router)
