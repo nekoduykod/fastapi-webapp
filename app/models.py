@@ -1,13 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-<<<<<<< HEAD
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
 from passlib.context import CryptContext
-=======
-from sqlalchemy.sql import func
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship
->>>>>>> parent of 1746764 (Merge branch 'main' of https://github.com/nekoduykod/webapp_with_openai)
 
 
 Base = declarative_base()
