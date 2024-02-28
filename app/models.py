@@ -1,13 +1,7 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-<<<<<<< HEAD
-from sqlalchemy.sql import func
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import relationship
-=======
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy.sql import func
 from passlib.context import CryptContext
->>>>>>> a297908a03ad7dccd05a491b6fac583619794710
 
 
 Base = declarative_base()

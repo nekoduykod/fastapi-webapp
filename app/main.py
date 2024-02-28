@@ -11,11 +11,6 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from .routers import login, register, account, shortcut, chatgpt
 
-<<<<<<< HEAD
-=======
-from dotenv import load_dotenv
-import os
->>>>>>> a297908a03ad7dccd05a491b6fac583619794710
 
 load_dotenv(".env")
 
@@ -27,11 +22,7 @@ templates = Jinja2Templates(directory="app/templates")
 app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
 
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
-<<<<<<< HEAD
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_MIDDL_SECRET_KEY"))
-=======
-app.add_middleware(SessionMiddleware, secret_key=os.environ.get("MIDDLEWARE_SECRET_KEY"))
->>>>>>> a297908a03ad7dccd05a491b6fac583619794710
 
 app.include_router(register.router)
 app.include_router(login.router)
