@@ -16,20 +16,19 @@ async def registr_page(request: Request):
 
 
 @router.post("/register", response_class=HTMLResponse)
-async def register(request: Request, 
+async def register(request: Request,
                   username: str = Form(...),
                   password: str = Form(...),
                      email: str = Form(...)):
     existing_user = db.session.query(ModelUsers) \
                              .filter(ModelUsers.username == username).first()
     if existing_user:
-        request.session["error"] = "Nickname is taken. Please choose another one"
         return templates.TemplateResponse("register.html",
-                                          {"request": request, 
-                                             "error": request.session.get('error')})
+                                    {"request": request, 
+                                       "error": "Nickname is taken. Please choose another one"})
     else:
-        db_user = ModelUsers(username=username, password=password, email=email)
+        db_user = ModelUsers(username=username, email=email)
+        db_user.set_password(password)
         db.session.add(db_user)
         db.session.commit()
-        print("Registration successful. Redirecting to login.")
         return RedirectResponse(url="/login", status_code=303)
