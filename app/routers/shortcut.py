@@ -1,7 +1,6 @@
 from fastapi import Request, Form, APIRouter
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-
 from fastapi_sqlalchemy import db
 
 from app.models import Shortcuts as ModelShortcuts

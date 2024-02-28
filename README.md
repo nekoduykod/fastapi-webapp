@@ -14,5 +14,5 @@
 
 <img src="static/images/005_gpt_page.png" />
 
-- Premium OpenAI account required, or new one with free 18$ quota. Anyway, it works.
+- Premium OpenAI account required
 <img src="static/images/005_not_paid_acc_2.png" />
