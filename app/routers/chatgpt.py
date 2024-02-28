@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 import openai
 
 
-load_dotenv(".env")
+load_dotenv("../../.env")
 
 
 router = APIRouter()

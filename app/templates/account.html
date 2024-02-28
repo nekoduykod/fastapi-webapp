@@ -28,6 +28,9 @@
           <button type="submit">Create shortcut</button>
        </form>
 
+   <h2>Need advice?</h2>  
+   <button id="go-to-chatgpt">Message ChatGPT</button>
+
    <h2>Your shortcuts</h2>
    <ul id="shortcuts-list">
       {% for shortcut in shortcuts %}
@@ -39,14 +42,17 @@
    </ul>
    <button id="reload-button">Reload shortcuts</button>
 
-   <h2>Need advice?</h2>  
-   <button id="go-to-chatgpt">Message ChatGPT</button>
-   
    <h2>Change password?</h2>
       {% if error %}
-         <p style="color: red;">{{ error }}</p>
-      {% elif success %}
-         <p style="color: rgb(250, 250, 250);">{{ success }}</p>
+          {% if "Incorrect current password" in error %}
+              <p style="color: red;">{{ error }}</p>
+          {% elif "New password and confirm password do not match" in error %}
+              <p style="color: red;">{{ error }}</p>
+          {% elif "Password changed successfully" in error %}
+              <p style="color: green;">{{ error }}</p>
+          {% else %}
+              <p>{{ error }}</p>
+          {% endif %}
       {% endif %}
    <form method="POST" action="/account">
        <label for="current_password">Current password:</label>
@@ -83,8 +89,9 @@
                   link.textContent = 'Link';
                   listItem.appendChild(link);
     
+                  // Add a space after the "Link" button
                   listItem.appendChild(document.createTextNode(' '));
-
+    
                   var deleteButton = document.createElement('a');
                   deleteButton.href = '/delete-shortcut/' + shortcut.id;
                   deleteButton.textContent = 'Delete';
@@ -103,7 +110,8 @@
                             return response.json();
                         })
                         .then(data => {
-                            alert(data.message); 
+                            alert(data.message); // Display a message indicating success or failure
+                            // Reload shortcuts after deletion
                             document.getElementById('reload-button').click();
                         })
                         .catch(error => {
@@ -118,12 +126,12 @@
               });
           });
     });
-
+    
     document.getElementById('go-to-chatgpt').addEventListener('click', function() {
       window.location.href = '/chatgpt';
     });
-    </script>
-
+    </script>    
+    
 </body>
 
 </html>

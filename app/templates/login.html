@@ -12,7 +12,7 @@
 
 <body class="login-background centered">
     <h1>Login</h1>
-    {% if error %}
+    {% if error and "Invalid login or password" in error %}
         <p style="color: red;">{{ error }}</p>
     {% endif %}
     <div class="form-container">
