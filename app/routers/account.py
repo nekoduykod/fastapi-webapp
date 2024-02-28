@@ -7,7 +7,7 @@ from app.models import Users as ModelUsers
 
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 
 @router.get('/account', response_class=HTMLResponse)

@@ -12,7 +12,7 @@ load_dotenv("../../.env")
 
 
 router = APIRouter()
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="app/templates")
 
 
 def get_openai_api_key():
