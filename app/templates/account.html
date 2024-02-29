@@ -44,15 +44,9 @@
 
         <h2>Change password?</h2>
             {% if error %}
-                {% if "Incorrect current password" in error %}
-                    <p style="color: red;">{{ error }}</p>
-                {% elif "New password and confirm password do not match" in error %}
-                    <p style="color: red;">{{ error }}</p>
-                {% elif "Password changed successfully" in error %}
-                    <p style="color: green;">{{ error }}</p>
-                {% else %}
-                    <p>{{ error }}</p>
-                {% endif %}
+                <p style="color: red;">{{ error }}</p>
+            {% elif success %}
+                <p style="color: rgb(8, 249, 96);">{{ success }}</p>
             {% endif %}
         <form method="POST" action="/account">
             <label for="current_password">Current password:</label>
