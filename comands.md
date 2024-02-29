@@ -9,6 +9,8 @@ pytest app/tests/test_main.py
 
 Alembic:
 alembic init alembic
+alembic revision --autogenerate -m "New Migration"
+alembic upgrade head
 
 Docker:
 docker-compose run app alembic revision --autogenerate -m "New Migration" 
