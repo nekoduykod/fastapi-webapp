@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi_sqlalchemy import db
 
-from app.models import Shortcuts as ModelShortcuts
+from app.models.models import Shortcuts as ModelShortcuts
 
 
 router = APIRouter()

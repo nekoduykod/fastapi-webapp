@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 import uvicorn
 
-from app.models import Users as ModelUsers
+from app.models.models import Users as ModelUsers
 from schema import Users as SchemaUsers
 
 

@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi_sqlalchemy import db
 
-from app.models import Users as ModelUsers
+from app.models.models import Users as ModelUsers
 
 
 router = APIRouter()
