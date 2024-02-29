@@ -1,11 +1,11 @@
-''' Swagger UI http://127.0.0.1:8000/docs#/ '''
+''' Swagger UI => http://127.0.0.1:8000/docs#/ '''
 from fastapi_sqlalchemy import db
 from fastapi import FastAPI
 
 import uvicorn
 
 from app.models.models import Users as ModelUsers
-from for_swagger_ui.schema import Users as SchemaUsers
+from swagger_ui.schema import Users as SchemaUsers
 
 
 app = FastAPI()

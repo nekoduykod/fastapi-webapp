@@ -40,7 +40,7 @@ async def delete_shortcut(request: Request, shortcut_id: int):
         db.session.commit()
         return {"message": "Shortcut deleted successfully"}
     else:
-        return {"error": "Shortcut wasn`t created"}
+        return RedirectResponse("/account")
     
 
 @router.get("/update-shortcuts")

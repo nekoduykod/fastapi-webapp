@@ -34,23 +34,22 @@ async def gpt_page(request: Request):
 async def chat_with_gpt(request: Request,
                         message: str = Form(...),
               openai_dependency: OpenAIDependency = Depends()):
-    print(f"Received message: {message}")
-    if not message:
-        raise HTTPException(status_code=400, detail="Message cannot be empty")
-    try:
+     
+     if not message:
+         raise HTTPException(status_code=400, detail="Message cannot be empty")
+     
+     try:
         stream = openai_dependency.client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": message}],
-            stream=True,
-            max_tokens=10) # Ліміт відповіді
+           model="gpt-3.5-turbo",
+           messages=[{"role": "user", "content": message}],
+           stream=True,
+           max_tokens=10) # Ліміт відповіді
         generated_message = ""
         async for chunk in stream:
            if chunk.choices[0].delta.content is not None:
               generated_message += chunk.choices[0].delta.content
-        print(f"Generated message: {generated_message}")
-        
-    except Exception as e:
-        print(f"Error generating response: {str(e)}")
+    
+     except Exception as e:
         raise HTTPException(status_code=500,
                             detail=f"Error generating response: {str(e)}")
-    return {"generated_message": generated_message}
+     return {"generated_message": generated_message}
