@@ -12,7 +12,7 @@
 
 <body class="register-background centered">
     <h1>Registration</h1>
-    {% if error and "Nickname is taken. Please choose another one" in error %}
+    {% if error %}
         <p style="color: rgb(255, 255, 255);">{{ error }}</p>
     {% endif %}
     <div class="form-container">
