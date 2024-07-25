@@ -3,5 +3,6 @@ venv
 .env
 alembic/__pycache__
 alembic/versions
+alembic.ini
 /docs
 .db

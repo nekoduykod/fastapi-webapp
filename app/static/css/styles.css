@@ -220,7 +220,7 @@ a.logout-link:hover {
 }
 
 .account-background {
-    background: url('/static/images/backgrnd_future_nature.jpg') no-repeat center center fixed;
+    background: url('/static/images/background_account.jpg') no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }
