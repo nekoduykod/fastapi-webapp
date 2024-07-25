@@ -19,9 +19,9 @@ app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 
 
-app.mount("/app/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
+app.add_middleware(DBSessionMiddleware, db_url=os.environ["SQLITE_URL"])
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_MIDDL_SECRET_KEY"))
 
 app.include_router(register.router)

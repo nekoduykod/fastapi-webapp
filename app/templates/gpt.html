@@ -1,63 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI assistance</title>
-  <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistance</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', path='favicon.ico') }}">
 </head>
-
 <body class="gpt-background centered">
-   <h1>Schnell !</h1>
-   
-   <div id="chat-container">
-       <div id="chat-messages"></div>
-       <form id="chat-form">
-           <label for="user-message">Message ChatGPT...</label>
-           <input type="text" id="user-message" name="user-message" required>
-           <button type="button" onclick="sendMessage()">Send</button>
-       </form>
-   </div>
-   
-   <a href="{{ url_for('account_page') }}">Return to my account</a>
-
-   <script>
-       async function sendMessage() {
-           var userMessage = document.getElementById('user-message').value;
-           var chatMessages = document.getElementById('chat-messages');
-           try {
-               chatMessages.innerHTML += `<div class="user-message">${userMessage}</div>`;
-               const response = await fetch('/chatgpt', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/x-www-form-urlencoded',
-                  },
-                  body: new URLSearchParams({
-                      'message': userMessage,
-                  }),
-               });
-               const responseData = await response.json();
-               console.log(responseData);
-               const generatedMessage = responseData.generated_message;
-   
-               chatMessages.innerHTML += `<div class="gpt-message">${generatedMessage}</div>`;
-
-               document.getElementById('user-message').value = '';
-           } catch (error) {
-               console.error('Error sending message:', error);
-           }
-       }
-       var input = document.getElementById("user-message");
-       input.addEventListener("keypress", function(event) {
-          if (event.key === "Enter") {
-              event.preventDefault();
-              sendMessage();   // Кнопка Enter функціонуватиме як "Send"
-          }
-       });
-   </script>
+    <h1>Schnell!</h1>
+    <div id="chat-container">
+        <div id="chat-messages">
+            {% if user_message %}
+                <div class="user-message">{{ user_message }}</div>
+            {% endif %}
+            {% if generated_message %}
+                <div class="gpt-message">{{ generated_message }}</div>
+            {% endif %}
+            {% if error %}
+                <div class="error-message">{{ error }}</div>
+            {% endif %}
+        </div>
+        <form action="{{ url_for('chat_with_gpt') }}" method="post">
+            <label for="user-message">Message ChatGPT...</label>
+            <input type="text" id="user-message" name="message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <a href="{{ url_for('account_page') }}">Return to my account</a>
 </body>
-
 </html>

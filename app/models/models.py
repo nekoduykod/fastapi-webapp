@@ -16,8 +16,11 @@ class Users(Base):
     username = Column(String, unique=True)
     hashed_password = Column(String(255))
     email = Column(String, unique=True, index=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, onupdate=func.now())
+    # if POSTGRESQL use:
+    # created_at = Column(DateTime(timezone=True), server_default=func.now())
+    # updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     shortcuts = relationship("Shortcuts", back_populates="users")
 

@@ -21,12 +21,12 @@ async def account_page(request: Request):
     if user:
        return templates.TemplateResponse("account.html", 
                                         {"request": request,
-                                            "user": user, 
+                                            "user": user,
                                            "error": None})
     else:
        return templates.TemplateResponse("account.html",
                                         {"request": request,
-                                            "user": None, 
+                                            "user": None,
                                            "error": "You are not logged in"})
 
 
@@ -36,23 +36,27 @@ async def change_pass(request: Request,
                       new_password: str = Form(...),
                       confirm_password: str = Form(...)):
     username = request.session.get("user")["username"]
-
     existing_user = db.session.query(ModelUsers) \
                               .filter(ModelUsers.username == username).first()
 
     if not existing_user or not pwd_context.verify(current_password, existing_user.hashed_password):
         return templates.TemplateResponse("account.html",
                                     {"request": request,
-                                        "user": {"username": username},
+                                        "user": {"username": username, "email": existing_user.email},
                                        "error": "Incorrect current password"})
     if new_password != confirm_password:
         return templates.TemplateResponse("account.html",
                                     {"request": request,
-                                        "user": {"username": username},
+                                        "user": {"username": username, "email": existing_user.email},
                                        "error": "New and confirm password do not match"})
     existing_user.set_password(new_password)
     db.session.commit()
+
+    request.session["user"] = {"username": username,
+                                  "email": existing_user.email,
+                                     "id": existing_user.id}
+    
     return templates.TemplateResponse("account.html",
                                 {"request": request,
-                                    "user": {"username": username},
+                                    "user": request.session["user"],
                                  "success": "Password changed successfully"})

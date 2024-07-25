@@ -196,15 +196,15 @@ a.logout-link:hover {
 }
 
 .delete-button {
-    color: red !important; /* Force the text color to red */
-    text-decoration: none !important; /* Remove underline */
-    margin-left: 10px; /* Add some space between the Link and Delete buttons */
-    cursor: pointer; /* Change the cursor to a pointer when hovering over the button */
-    /* Add any other styling rules as needed */
+    color: red !important; 
+    text-decoration: none !important;  
+    margin-left: 10px;  
+    cursor: pointer;  
+ 
 }
    
 .delete-button:hover {
-    background-color: #ffcccc; /* Add a light red background color when hovering over the button */
+    background-color: #ffcccc; 
 }
 
 .register-background {
