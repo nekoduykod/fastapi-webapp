@@ -6,6 +6,7 @@ from fastapi_sqlalchemy import db
 from passlib.context import CryptContext
 
 from app.models.models import Users as ModelUsers
+from app.models.models import Shortcuts as ModelShortcuts
 
 
 router = APIRouter()
@@ -19,9 +20,11 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 async def account_page(request: Request):
     user = request.session.get("user")
     if user:
+       shortcuts = db.session.query(ModelShortcuts).filter_by(user_id=user["id"]).all()
        return templates.TemplateResponse("account.html", 
                                         {"request": request,
                                             "user": user,
+                                            "shortcuts": shortcuts,
                                            "error": None})
     else:
        return templates.TemplateResponse("account.html",
@@ -60,3 +63,23 @@ async def change_pass(request: Request,
                                 {"request": request,
                                     "user": request.session["user"],
                                  "success": "Password changed successfully"})
+
+
+@router.post('/delete-shortcut/{shortcut_id}', response_class=HTMLResponse)
+async def delete_shortcut(request: Request, shortcut_id: int):
+    user = request.session.get("user")
+    if not user:
+        return templates.TemplateResponse("account.html",
+                                          {"request": request, "user": None, "error": "You are not logged in"})
+
+    shortcut = db.session.query(ModelShortcuts).filter_by(id=shortcut_id, user_id=user["id"]).first()
+    if not shortcut:
+        return templates.TemplateResponse("account.html",
+                                          {"request": request, "user": user, "error": "Shortcut not found"})
+
+    db.session.delete(shortcut)
+    db.session.commit()
+
+    updated_shortcuts = db.session.query(ModelShortcuts).filter_by(user_id=user["id"]).all()
+    return templates.TemplateResponse("account.html",
+                                      {"request": request, "user": user, "shortcuts": updated_shortcuts, "success": "Shortcut deleted successfully"})

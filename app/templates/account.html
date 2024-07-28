@@ -16,38 +16,39 @@
         <p>Email: {{ user.email }}</p>
     </div>
 
-   <div class="content">
-       <h2>Need advice?</h2>  
-       <button id="go-to-chatgpt">Message ChatGPT</button>
+    <div class="content">
+        <h2>Need advice?</h2>
+        <a href="/chatgpt" id="go-to-chatgpt">Message ChatGPT</a>
 
-       <h2>Create shortcut</h2>
-       <form method="POST" action="/create-shortcut">
-          <label for="shortcut_title">Title:</label>
-          <input type="text" name="shortcut_title" id="shortcut_title" required>
-          <br>
-          <label for="shortcut_url">URL:</label>
-          <input type="text" name="shortcut_url" id="shortcut_url" required>
-          <br>
-          <button type="submit">Create shortcut</button>
-       </form>
+        <h2>Create shortcut</h2>
+        <form method="POST" action="/create-shortcut">
+            <label for="shortcut_title">Title:</label>
+            <input type="text" name="shortcut_title" id="shortcut_title" required>
+            <br>
+            <label for="shortcut_url">URL:</label>
+            <input type="text" name="shortcut_url" id="shortcut_url" required>
+            <br>
+            <button type="submit">Create shortcut</button>
+        </form>
 
         <h2>Your shortcuts</h2>
         <ul id="shortcuts-list">
             {% for shortcut in shortcuts %}
                 <li>
-                    {{ shortcut.title }} - <a href="/go-to-shortcut/{{ shortcut.id }}">Link</a>
-                    - <a href="/delete-shortcut/{{ shortcut.id }}" class="delete-button">Delete</a>
+                    {{ shortcut.title }} - <a href="{{ shortcut.url }}">Link</a>
+                    <form method="POST" action="/delete-shortcut/{{ shortcut.id }}" style="display:inline;">
+                        <button type="submit" class="delete-button">Delete</button>
+                    </form>
                 </li>
             {% endfor %}
         </ul>
-        <button id="reload-button">Reload shortcuts</button>
 
         <h2>Change password?</h2>
-            {% if error %}
-                <p style="color: red;">{{ error }}</p>
-            {% elif success %}
-                <p style="color: rgb(8, 249, 96);">{{ success }}</p>
-            {% endif %}
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% elif success %}
+            <p style="color: rgb(8, 249, 96);">{{ success }}</p>
+        {% endif %}
         <form method="POST" action="/account">
             <label for="current_password">Current password:</label>
             <input type="password" name="current_password" id="current_password" required>
@@ -60,72 +61,11 @@
             <br>
             <button type="submit">Change it now !</button>
         </form>
-
     </div>
 
     <div class="footer">
         <a href="/" class="logout-link">Logout</a>
     </div>
-
-   <script>
-    document.getElementById('reload-button').addEventListener('click', function() {
-      fetch('/update-shortcuts')
-          .then(response => response.json())
-          .then(data => {
-              var shortcutsList = document.getElementById('shortcuts-list');
-              shortcutsList.innerHTML = '';
-    
-              data.shortcuts.forEach(shortcut => {
-                  var listItem = document.createElement('li');
-                  listItem.textContent = shortcut.title + ' - ';
-                  var link = document.createElement('a');
-                  link.href = '/go-to-shortcut/' + shortcut.id;
-                  link.textContent = 'Link';
-                  listItem.appendChild(link);
-    
-                  // Add a space after the "Link" button
-                  listItem.appendChild(document.createTextNode(' '));
-    
-                  var deleteButton = document.createElement('a');
-                  deleteButton.href = '/delete-shortcut/' + shortcut.id;
-                  deleteButton.textContent = 'Delete';
-                  deleteButton.className = 'delete-button';
-                  deleteButton.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    var shortcutId = this.href.split('/').pop();
-                    if (confirm("Are you sure you want to delete this shortcut?")) {
-                        fetch('/delete-shortcut/' + shortcutId, {
-                            method: 'DELETE',
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            alert(data.message); // Display a message indicating success or failure
-                            // Reload shortcuts after deletion
-                            document.getElementById('reload-button').click();
-                        })
-                        .catch(error => {
-                            console.error('Error during shortcut deletion:', error);
-                            alert('An error occurred during shortcut deletion. Please try again.');
-                        });
-                    }
-                  });
-                  listItem.appendChild(deleteButton);
-    
-                  shortcutsList.appendChild(listItem);
-              });
-          });
-    });
-    
-    document.getElementById('go-to-chatgpt').addEventListener('click', function() {
-      window.location.href = '/chatgpt';
-    });
-    </script>    
-    
 </body>
 
 </html>

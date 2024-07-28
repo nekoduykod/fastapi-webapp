@@ -208,30 +208,30 @@ a.logout-link:hover {
 }
 
 .register-background {
-    background: url('/static/images/backgrnd_city_river.jpg') no-repeat center center fixed;
+    background: url('/static/images/register_pic.jpg') no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }
 
 .login-background {
-    background: url('/static/images/backgrnd_city_river2.jpg') no-repeat center center fixed;
+    background: url('/static/images/login_pic.jpg') no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }
 
 .account-background {
-    background: url('/static/images/background_account.jpg') no-repeat center center fixed;
+    background: url('/static/images/account_pic.jpg') no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }
 
 .gpt-background {
-    background: url('/static/images/backgrnd_flower.jpg') no-repeat center center fixed;
+    background: url('/static/images/gpt_pic.jpg') no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }
 .home-background {
-    background: url('/static/images/backgrnd_city.jpg') no-repeat center center fixed;
+    background: url('/static/images/home_pic.jpg') no-repeat center center fixed;
     background-size: cover;
     position: relative;
 }

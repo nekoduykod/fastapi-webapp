@@ -6,3 +6,55 @@ alembic/versions
 alembic.ini
 /docs
 .db
+
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Pytest cache
+.cache/
+.pytest_cache/
+
+# Test coverage reports
+.coverage
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Pyre type checker
+.pyre/
+
+# MyPy
+.mypy_cache/
+
+# FastAPI specific
+*.log
