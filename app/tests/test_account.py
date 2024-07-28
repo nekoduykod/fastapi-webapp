@@ -8,17 +8,17 @@ from typing import Generator
 from app.main import app
 from app.models.models import Base, Users as ModelUsers, pwd_context
 
-# Create an in-memory SQLite database engine
+
 TEST_SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(TEST_SQLALCHEMY_DATABASE_URL, echo=True)
 
-# Create a configured "Session" class
+
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create all tables in the test database
+
 Base.metadata.create_all(bind=engine)
 
-# Define get_db and get_session functions here
+
 def get_db():
     db = TestingSessionLocal()
     try:
@@ -29,7 +29,7 @@ def get_db():
 async def get_session(request: Request):
     return {"user": {"username": "testuser"}}
 
-# Fixtures for testing
+
 @pytest.fixture(scope="function")
 def db_session() -> Generator[Session, None, None]:
     """Create a new database session for a test."""
@@ -37,7 +37,7 @@ def db_session() -> Generator[Session, None, None]:
     transaction = connection.begin()
     session = TestingSessionLocal(bind=connection)
 
-    yield session  # Testing happens here
+    yield session
 
     session.close()
     transaction.rollback()
@@ -46,14 +46,14 @@ def db_session() -> Generator[Session, None, None]:
 
 @pytest.fixture(scope="function")
 def override_get_db(db_session: Session) -> Generator[None, None, None]:
-    # Override the get_db dependency with the test session
+
     app.dependency_overrides[get_db] = lambda: db_session
     yield
     app.dependency_overrides[get_db] = None
 
 @pytest.fixture(scope="function")
 def override_get_session() -> Generator[None, None, None]:
-    # Override the get_session dependency with the test session
+
     app.dependency_overrides[get_session] = get_session
     yield
     app.dependency_overrides[get_session] = None
