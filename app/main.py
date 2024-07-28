@@ -1,6 +1,3 @@
-import os
-from dotenv import load_dotenv
-
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -10,9 +7,7 @@ from fastapi_sqlalchemy import DBSessionMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from .routers import login, register, account, shortcut, chatgpt
-
-
-load_dotenv(".env")
+from config import SQLITE_URL, SESSION_MIDDL_SECRET_KEY
 
 
 app = FastAPI()
@@ -21,8 +16,8 @@ templates = Jinja2Templates(directory="app/templates")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-app.add_middleware(DBSessionMiddleware, db_url=os.environ["SQLITE_URL"])
-app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_MIDDL_SECRET_KEY"))
+app.add_middleware(DBSessionMiddleware, db_url=SQLITE_URL)
+app.add_middleware(SessionMiddleware, secret_key=SESSION_MIDDL_SECRET_KEY)
 
 app.include_router(register.router)
 app.include_router(login.router)
