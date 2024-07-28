@@ -6,5 +6,5 @@ Frontend - HTML, CSS
 
 Functionality - Registration, Login, Todo-alike list, Chatgpt API.
 
-todo:
+my notes:
 3. add middlewares if needed. 
