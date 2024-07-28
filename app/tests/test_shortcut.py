@@ -7,8 +7,8 @@ from app.main import app
 async def test_create_shortcut():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/create-shortcut", data={"shortcut_title": "Test Shortcut", "shortcut_url": "http://example.com"})
-    assert response.status_code == 303 
-    assert response.headers["location"] == "/account"
+        assert response.status_code == 303 
+        assert response.headers["location"] == "/account"
 
 
 @pytest.mark.asyncio
