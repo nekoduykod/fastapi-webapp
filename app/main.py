@@ -3,11 +3,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from fastapi_sqlalchemy import DBSessionMiddleware
-from starlette.middleware.sessions import SessionMiddleware
+from app.middleware.setup_middlewares import setup_middlewares
+from app.middleware.setup_db import setup_database
 
-from .routers import login, register, account, shortcut, chatgpt
-from app.config import SQLITE_URL, SESSION_MIDDL_SECRET_KEY
+from app.routers import main_router
 
 
 app = FastAPI()
@@ -16,14 +15,12 @@ templates = Jinja2Templates(directory="app/templates")
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-app.add_middleware(DBSessionMiddleware, db_url=SQLITE_URL)
-app.add_middleware(SessionMiddleware, secret_key=SESSION_MIDDL_SECRET_KEY)
 
-app.include_router(register.router)
-app.include_router(login.router)
-app.include_router(account.router)
-app.include_router(shortcut.router)
-app.include_router(chatgpt.router)
+app.include_router(main_router)
+
+
+setup_database(app)
+setup_middlewares(app)
 
 
 @app.get('/', response_class=HTMLResponse)

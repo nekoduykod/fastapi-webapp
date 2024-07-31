@@ -4,6 +4,7 @@ from fastapi.templating import Jinja2Templates
 import openai
 
 from app.config import OPENAI_API_KEY
+from app.middleware.rate_limiter import limiter
 
 
 router = APIRouter()
@@ -27,6 +28,7 @@ async def gpt_page(request: Request, user_message: str = "", generated_message: 
 
 
 @router.post('/chatgpt', response_class=HTMLResponse)
+@limiter.limit("5/minute")
 async def chat_with_gpt(request: Request, message: str = Form(...), openai_dependency: OpenAIDependency = Depends()):
     if not message:
         return templates.TemplateResponse("gpt.html", {"request": request, "error": "Message cannot be empty"})
