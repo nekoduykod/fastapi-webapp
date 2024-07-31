@@ -7,7 +7,7 @@ from fastapi_sqlalchemy import DBSessionMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from .routers import login, register, account, shortcut, chatgpt
-from config import SQLITE_URL, SESSION_MIDDL_SECRET_KEY
+from app.config import SQLITE_URL, SESSION_MIDDL_SECRET_KEY
 
 
 app = FastAPI()

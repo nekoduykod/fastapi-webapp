@@ -14,12 +14,16 @@ run_app:
 	uvicorn app.main:app --reload
 
 test:
-	pytest app/tests/test_main.py
+	pytest app/tests/test_login.py
+	pytest app/tests/test_register.py
+	pytest app/tests/test_account.py
+	pytest app/tests/test_shortcut.py
+	pytest app/tests/test_chatgpt.py
 
-alembic_init:
+alembic_init: # in alembic.ini => sqlalchemy.url = sqlite:///./database.db
 	alembic init alembic
 
-alembic_migrate:
+alembic_migrate: # alembic/env.py => from app.models.models import Base; target_metadata = Base.metadata
 	alembic revision --autogenerate -m "New Migration"
 	alembic upgrade head
 
